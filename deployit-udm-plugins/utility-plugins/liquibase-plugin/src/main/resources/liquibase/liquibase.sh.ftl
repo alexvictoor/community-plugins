@@ -6,7 +6,12 @@
 <#if deployed.container.driverClasspath??>
   <#assign options = options + " --classpath=${deployed.container.driverClasspath}"> 
 </#if>
-cd "${step.uploadedArtifactPath}"
+
+<#if deployed.changeLogPath??>
+  mkdir -p ${deployed.changeLogPath}
+  mv changelog ${deployed.changeLogPath}
+</#if>
+
 ${deployed.container.javaCmd} -jar ${deployed.container.liquibaseJarPath} ${options} --changeLogFile="${deployed.changeLogFile}" updateSQL
 generateStatus=$?
 if [ $generateStatus == 0 ]; then
