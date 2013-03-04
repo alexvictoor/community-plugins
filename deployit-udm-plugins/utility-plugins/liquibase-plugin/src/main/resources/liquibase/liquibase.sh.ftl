@@ -11,4 +11,8 @@ ${deployed.container.javaCmd} -jar ${deployed.container.liquibaseJarPath} ${opti
 generateStatus=$?
 if [ $generateStatus == 0 ]; then
   ${deployed.container.javaCmd} -jar ${deployed.container.liquibaseJarPath} ${options} --changeLogFile="${deployed.changeLogFile}" update
+else
+   exit $generateStatus  
 fi
+
+exit 0
