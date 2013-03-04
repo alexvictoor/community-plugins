@@ -19,6 +19,7 @@
 		<property name="liquibaseJarPath" default="liquibase.jar"/>
 		<property name="javaCmd" default="java"/>
 		<property name="driverClasspath" required="false"/>
+		<property name="generatedSqlPath" required="false"/>
 		
 		 <method name="test" description="Test liquibase installation"/>          
     </type> 
