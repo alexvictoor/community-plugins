@@ -7,10 +7,7 @@
   <#assign options = options + " --classpath=${deployed.container.driverClasspath}"> 
 </#if>
 
-<#if deployed.changeLogPath??>
-  mkdir -p ${deployed.changeLogPath}
-  mv changelog ${deployed.changeLogPath}
-</#if>
+cd "${step.uploadedArtifactPath}"
 
 <#assign ouptutfile = "">
 <#if deployed.container.generatedSqlPath??>

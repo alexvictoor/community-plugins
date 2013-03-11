@@ -4,7 +4,6 @@
     <type type="liquibase.ExecutedChangelog" extends="generic.ExecutedScript" deployable-type="liquibase.Changelog" container-type="liquibase.Runner" description="Executed liquibase changelog">
 		<generate-deployable type="liquibase.Changelog" extends="generic.Folder" />
 		<property name="changeLogFile"/>
-		<property name="changeLogPath" required="false"/>
 		<property name="createScript" default="${deployed.container.updateScript}" hidden="true"/>
 		<property name="modifyScript" default="${deployed.container.updateScript}" hidden="true" />
 		<property name="destroyScript" default="${deployed.container.updateScript}" hidden="true"/>
