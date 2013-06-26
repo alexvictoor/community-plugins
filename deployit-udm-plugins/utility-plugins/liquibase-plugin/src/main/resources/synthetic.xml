@@ -15,6 +15,7 @@
 		<property name="testScript"  hidden="true" default="liquibase/test" />
 		<property name="liquibaseConfigurationPath" default="liquibase.properties"/>
 		<property name="liquibaseJarPath" default="liquibase.jar"/>
+		<property name="liquibaseExtraArguments" description="Use to pass extra arguments to the liquibase command." required="false"/>
 		<property name="javaCmd" default="java"/>
 		<property name="driverClasspath" required="false"/>
 		<property name="generatedSqlPath" required="false"/>

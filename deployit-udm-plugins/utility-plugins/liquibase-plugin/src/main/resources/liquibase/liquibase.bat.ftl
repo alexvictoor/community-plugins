@@ -5,6 +5,9 @@
 <#if deployed.container.driverClasspath??>
   <#assign options = options + " --classpath=${deployed.container.driverClasspath}"> 
 </#if>
+<#if deployed.container.liquibaseExtraArguments??>
+  <#assign options = options + " ${deployed.container.liquibaseExtraArguments}"> 
+</#if>
 cd "${step.uploadedArtifactPath}"
 
 
