@@ -180,7 +180,7 @@ public class GeneratePreAndPostEmails {
         }
 
         @Override
-        public ReadOnlyRepository getRepository() {
+        public com.xebialabs.deployit.plugin.api.services.Repository getRepository() {
             throw new UnsupportedOperationException("TODO Auto-generated method stub");
         }
 
@@ -213,5 +213,6 @@ public class GeneratePreAndPostEmails {
         public void addStepWithCheckpoint(Step arg0, Delta arg1, Operation arg2) {
             throw new UnsupportedOperationException("TODO Auto-generated method stub");
         }
+
     }
 }

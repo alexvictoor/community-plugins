@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+
+import com.xebialabs.deployit.booter.local.LocalBooter;
 import com.xebialabs.deployit.plugin.api.udm.ConfigurationItem;
 import com.xebialabs.deployit.plugin.api.udm.base.BaseContainer;
 
@@ -22,7 +24,8 @@ public class LockFileHelperTest {
 
 	@Before
 	public void createContainer() {
-		this.ci = new BaseContainer();
+        LocalBooter.bootWithoutGlobalContext();
+        this.ci = new BaseContainer();
 		this.ci.setId("Infrastructure/lock/TestContainer");
 		this.ci2 = new BaseContainer();
 		this.ci2.setId("Infrastructure/lock/TestContainer2");

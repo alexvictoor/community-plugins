@@ -1,6 +1,7 @@
 package ext.deployit.community.plugin.overthere;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -20,11 +21,9 @@ import com.xebialabs.deployit.plugin.api.udm.Deployed;
 import com.xebialabs.deployit.plugin.api.udm.DeployedApplication;
 import com.xebialabs.deployit.plugin.overthere.Host;
 import com.xebialabs.deployit.plugin.overthere.HostContainer;
-import com.xebialabs.deployit.plugin.overthere.step.CheckConnectionStep;
 
-import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.ImmutableSet.of;
-import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -43,15 +42,15 @@ public class CredentialProcessor {
         final Set<Host> aliasHosts = Sets.filter(hosts, IS_SUPPORTED_TYPES);
         logger.debug("Credential Hosts {}", aliasHosts);
 
-        final Iterable<Step> transform = transform(aliasHosts, new Function<Host, Step>() {
+        final Iterable<List<Step>> transform = transform(aliasHosts, new Function<Host, List<Step>>() {
             @Override
-            public Step apply(final Host host) {
+            public List<Step> apply(final Host host) {
                 logger.debug("CredentialProcessor injects credentials in a host {} ", host.getId());
                 setCredentials(host, "username", "password");
-                return (checkConnection ? new CheckConnectionStep(host) : null);
+                return (checkConnection ? host.checkConnection() : Collections.EMPTY_LIST);
             }
         });
-        return newArrayList(filter(transform, notNull()));
+        return newArrayList(concat(transform));
     }
 
     private Boolean isCheckConnection(final DeployedApplication deployedApplication) {

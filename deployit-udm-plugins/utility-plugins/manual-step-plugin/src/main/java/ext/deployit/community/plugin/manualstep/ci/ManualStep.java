@@ -5,7 +5,7 @@ import com.xebialabs.deployit.plugin.api.deployment.specification.Operation;
 import com.xebialabs.deployit.plugin.api.udm.Metadata;
 import com.xebialabs.deployit.plugin.api.udm.Property;
 import com.xebialabs.deployit.plugin.api.udm.base.BaseConfigurationItem;
-import com.xebialabs.deployit.plugin.mail.SMTPServer;
+import com.xebialabs.deployit.plugin.mail.SmtpServer;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ManualStep extends BaseConfigurationItem {
     private String instructionsScriptPath;
 
     @Property(required = false, description = "The mail server used to send the email.",category = "Mail")
-    private SMTPServer mailServer;
+    private SmtpServer mailServer;
 
     @Property(required = false, description = "Mail addresses of recepients.", category = "Mail")
     private List<String> toAddresses = newArrayList();
@@ -41,7 +41,7 @@ public class ManualStep extends BaseConfigurationItem {
     @Property(required = false, description = "Mail subject", category = "Mail")
     private String subject;
 
-    @Property(required = false, description = "From mail address. Defaults to SMTPServer fromAddress.", category = "Mail")
+    @Property(required = false, description = "From mail address. Defaults to SmtpServer fromAddress.", category = "Mail")
     private String fromAddress;
 
     public ContributorType getContributorType() {
@@ -116,11 +116,11 @@ public class ManualStep extends BaseConfigurationItem {
         this.fromAddress = fromAddress;
     }
 
-    public SMTPServer getMailServer() {
+    public SmtpServer getMailServer() {
         return mailServer;
     }
 
-    public void setMailServer(SMTPServer mailServer) {
+    public void setMailServer(SmtpServer mailServer) {
         this.mailServer = mailServer;
     }
 }

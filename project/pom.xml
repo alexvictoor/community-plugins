@@ -3,17 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.xebialabs.deployit</groupId>
   <artifactId>community-plugins-project</artifactId>
-  <version>3.8.0</version>
+  <version>3.9</version>
   <packaging>pom</packaging>
   <properties>
     <deployit.server.home>${env.DEPLOYIT_HOME}</deployit.server.home>
     <deployit.cli.home>${env.DEPLOYIT_CLI_HOME}</deployit.cli.home>
-    <deployit.api.version>3.8.0</deployit.api.version>
-    <deployit.spi.version>3.8.0</deployit.spi.version>
-    <deployit.engine.version>3.8.0</deployit.engine.version>
-    <deployit.servercli.version>3.8.0</deployit.servercli.version>
-    <deployit.bundledplugin.version>3.8.0</deployit.bundledplugin.version>
-    <overthere.version>2.1.0</overthere.version>
+    <deployit.api.version>3.9.1</deployit.api.version>
+    <deployit.spi.version>3.9.1</deployit.spi.version>
+    <deployit.engine.version>3.9.1</deployit.engine.version>
+    <deployit.servercli.version>3.9.1</deployit.servercli.version>
+    <deployit.bundledplugin.version>3.9.1</deployit.bundledplugin.version>
+    <deployit.wls.version>3.9.0</deployit.wls.version>
+    <overthere.version>2.2.0</overthere.version>
     <scannit.version>1.0.2</scannit.version>
     <github.global.server>github</github.global.server>
     <maven.compile.source>1.6</maven.compile.source>
@@ -72,6 +73,13 @@
         <scope>system</scope>
         <systemPath>${deployit.server.home}/lib/server-core-${deployit.servercli.version}.jar</systemPath>
       </dependency>
+        <dependency>
+            <groupId>com.xebialabs.deployit</groupId>
+            <artifactId>appserver-core</artifactId>
+            <version>${deployit.servercli.version}</version>
+            <scope>system</scope>
+            <systemPath>${deployit.server.home}/lib/appserver-core-${deployit.servercli.version}.jar</systemPath>
+        </dependency>
       <dependency>
         <groupId>com.xebialabs.deployit</groupId>
         <artifactId>udm-plugin-api</artifactId>
@@ -105,7 +113,7 @@
         <artifactId>wls-plugin</artifactId>
         <version>${deployit.api.version}</version>
         <scope>system</scope>
-        <systemPath>${deployit.server.home}/plugins/wls-plugin-${deployit.api.version}.jar</systemPath>
+        <systemPath>${deployit.server.home}/plugins/wls-plugin-${deployit.wls.version}.jar</systemPath>
       </dependency>
       <dependency>
         <groupId>com.xebialabs.deployit.plugins</groupId>

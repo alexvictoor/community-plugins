@@ -23,48 +23,14 @@ DEPLOYIT_SERVER_HOME='unknown'
 from cStringIO import StringIO
 import sys
 
-# Deployit 3.0 doesn't expose this module by default
+# Deployit 3.0 doesn't expose 'os' by default
 try:
 	import os
+	import re
 except:
 	print ""
-	print "Please ensure the CLI has the 'os' module available before running this script. See http://support.xebialabs.com/entries/514462-using-python-modules-in-cli-scripts for more information."
+	print "Please ensure the CLI has the 'os' and 're' modules available before running this script. See http://support.xebialabs.com/entries/514462-using-python-modules-in-cli-scripts for more information."
 	raise
-
-def is30():
-	version = getVersion()
-	if version.startswith('3.0'):
-		return True
-	else:
-		return False
-
-def is38():
-	version = getVersion()
-	if version.startswith('3.8'):
-		return True
-	else:
-		return False
-
-def is37():
-	version = getVersion()
-	if version.startswith('3.7'):
-		return True
-	else:
-		return False
-
-def is36():
-	version = getVersion()
-	if version.startswith('3.6'):
-		return True
-	else:
-		return False
-
-def is35():
-	version = getVersion()
-	if version.startswith('3.5'):
-		return True
-	else:
-		return False
 
 def getVersion():
 	try:
@@ -72,10 +38,13 @@ def getVersion():
 	except:
 		return "3.0.x"
 
+def versionIs(versionPrefix):
+	return getVersion().startswith(versionPrefix)
+
 def header():
 	print ""
 	print "======================================="
-	print "Deployit usage information, v0.1"
+	print "Deployit usage information, v0.2"
 	print ""
 	
 def footer():
@@ -88,15 +57,15 @@ def cicount():
 	print ""
 
 	descriptorLookup = {}
-	if is38():
+	if versionIs("3.8") or versionIs("3.9"):
 		descriptors = proxies.referenceData.listDescriptors()
-	elif is37():
+	elif versionIs("3.7"):
 		descriptors = proxies.referenceData.list().entity.descriptors
 	else:
 		descriptors = proxies.descriptors.list().entity.descriptors
 		
 	for descriptor in descriptors:
-		if is30():
+		if versionIs("3.0"):
 			lookupname = descriptor.simpleName
 		else:
 			lookupname = str(descriptor.type)
@@ -124,11 +93,11 @@ def listFiles(directory, exts = None):
 	for dirname, dirnames, filenames in os.walk(directory):
 		for filename in filenames:
 			if exts == None or filename[filename.rfind('.')+1:] in exts:
-				files.append(filename)
+				files.append(str(filename))
 	return str(files)
 
 def listSshHosts():
-	if is30():
+	if versionIs("3.0"):
 		sshHostCI = 'Host'
 	else:
 		sshHostCI = 'overthere.SshHost'
@@ -137,13 +106,13 @@ def listSshHosts():
 	print "   SSH hosts: " , len(unixHosts)
 	for hostid in unixHosts:
 		host = repository.read(hostid)
-		if is30() and host.values['accessMethod'].startswith('SSH'):
+		if versionIs("3.0") and host.values['accessMethod'].startswith('SSH'):
 			print "     OS:",host.values['operatingSystemFamily'],", Connection type:",host.values['accessMethod'],", Sudo username:" , host.values['sudoUsername']
 		else:
 			print "     OS:",host.values['os'],", Connection type:",host.values['connectionType'],", Sudo username:" , host.values['sudoUsername']
 
 def listCifsHosts():
-	if is30():
+	if versionIs("3.0"):
 		winHostCI = 'Host'
 	else:
 		winHostCI = 'overthere.CifsHost'
@@ -152,7 +121,7 @@ def listCifsHosts():
 	print "   CIFS hosts: " , len(winHosts)
 	for hostid in winHosts:
 		host = repository.read(hostid)
-		if is30() and host.values['accessMethod'].startswith('CIFS'):
+		if versionIs("3.0") and host.values['accessMethod'].startswith('CIFS'):
 			print "     OS:",host.values['operatingSystemFamily'],", Connection type:",host.values['accessMethod'],", Sudo username:" , host.values['sudoUsername']
 		else:
 			print "     OS:",host.values['os'],", Connection type: " , host.values['connectionType']
@@ -168,13 +137,40 @@ def listRepositoryConfig():
 	jackrabbitJaasConfig = serverHome + os.sep + 'conf' + os.sep + 'jackrabbit-jaas.config'
 	if os.path.exists(jackrabbitJaasConfig): # Deployit 3.0 - 3.6
 		f = open(jackrabbitJaasConfig)
-		for line in f:
-			#if re.match(, line):
-			pass
-		f.close()
+		try:
+			for line in f:
+				#if re.match(, line):
+				pass
+		except:
+			f.close()
 
-	print "   Authentication mechanism:",repoauth
-	print "   Storage mechanism:",repostorage
+	springSecurityConfig = serverHome + os.sep + 'conf' + os.sep + 'deployit-security.xml'
+	if os.path.exists(springSecurityConfig):
+		f = open(springSecurityConfig)
+		try:
+			authproviders = []
+			for line in f:
+				match = re.match('\\s*<security:authentication-provider ref=[\'"]([^\'"]+)[\'"].*', line)
+				if match:
+					authproviders.append(match.group(1))
+			repoauth = str(authproviders)
+		except:
+			f.close()
+
+	jackrabbitRepoConfig = serverHome + os.sep + 'conf' + os.sep + 'jackrabbit-repository.xml'
+	if os.path.exists(jackrabbitRepoConfig):
+		f = open(jackrabbitRepoConfig)
+		try:
+			for line in f:
+				match = re.match('\\s*<DataStore class=[\'"]([^\'"]+)[\'"].*', line)
+				if match:
+					repostorage = match.group(1)
+					pass
+		except:
+			f.close()
+
+	print "   Authentication mechanism:", repoauth
+	print "   Storage mechanism:", repostorage
 	
 ######################
 # MAIN
@@ -257,16 +253,16 @@ print "-- Server extension --"
 print ""
 if serverHome != "unknown":
 	print "   Installed server extensions: " , listFiles(serverHome + os.sep + 'ext')
+	print ""
 
 	serverSynthetic = serverHome + os.sep + 'ext' + os.sep + 'synthetic.xml'
 	if os.path.exists(serverSynthetic):
 		print "   Contents of synthetic.xml:"
-		print ""
-		print "----------"
+		print "   ----------"
 		f = open(serverSynthetic)
 		for line in f:
-			print "      " + line,
-		print "----------"
+			print "   " + line,
+		print "   ----------"
 		f.close()
 else:
 	print "Unable to examine server installation directory. Please pass the server home directory with the -server-home flag or enter it directly in this script."

@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.xebialabs.deployit</groupId>
     <artifactId>utility-plugins</artifactId>
-    <version>3.8.0</version>
+    <version>3.9</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>credential-on-host-plugin</artifactId>
-  <version>${deployit.api.version}-3-SNAPSHOT</version>
+  <version>${deployit.api.version}-2-SNAPSHOT</version>
   <scm>
     <connection>scm:git:git://github.com/xebialabs/community-plugins.git</connection>
     <url>scm:git:git://github.com/xebialabs/community-plugins.git</url>

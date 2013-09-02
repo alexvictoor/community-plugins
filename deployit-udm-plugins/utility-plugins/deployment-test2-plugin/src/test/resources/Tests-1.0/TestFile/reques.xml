@@ -1,0 +1,12 @@
+<s:Envelope
+    xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/1999/XMLSchema"
+>
+    <s:Body>
+            <x:FlickrRequest xmlns:x="urn:flickr">
+                    <method>flickr.test.echo</method>
+                    <name>value</name>
+            </x:FlickrRequest>
+    </s:Body>
+</s:Envelope>

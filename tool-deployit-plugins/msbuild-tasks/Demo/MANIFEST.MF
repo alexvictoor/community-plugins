@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Deployit-Package-Format-Version: 1.3
+CI-Application: MVC_PORTAL
+
+Name: MyMVCWebPortal
+CI-scanPlaceholders: false
+CI-targetPath: {{WEBPORTALPATH}}
+CI-Type: iis.WebContent
+CI-excludeFileNamesRegex: EntityFramework.xml
+CI-Name: WebPortal
+
+Name: Web portal App
+CI-Type: iis.ApplicationSpec
+CI-physicalPath: {{WEBPORTALPATH}}
+CI-websiteName: {{WEBSITENAME}}
+CI-applicationPath: WebPortal
+CI-applicationPoolName: ASP.Net v4.0
+

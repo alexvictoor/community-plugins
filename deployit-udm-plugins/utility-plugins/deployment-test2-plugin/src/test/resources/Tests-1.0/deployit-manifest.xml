@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<udm.DeploymentPackage version="1.0" application="SoapTest">
+  <deployables>
+    <tests2.HttpPostFileRequestTest name="TestFile" file="TestFile/reques.xml">
+      <tags />
+      <scanPlaceholders>true</scanPlaceholders>
+      <checksum>5d56507bdf375ea1bab670ea3b215b04b96c5ab</checksum>
+      <url>http://api.flickr.com/services/soap/</url>
+      <expectedResponseText>Invalid API</expectedResponseText>
+      <startDelay>0</startDelay>
+      <showPageInConsole>true</showPageInConsole>
+    </tests2.HttpPostFileRequestTest>
+    <tests2.HttpRequestTest name="HttpRequestTest">
+      <tags />
+      <url>http://www.google.com</url>
+      <expectedResponseText>google</expectedResponseText>
+      <startDelay>0</startDelay>
+      <showPageInConsole>true</showPageInConsole>
+    </tests2.HttpRequestTest>
+    <tests2.HttpPostRequestTest name="XmlRequestTest">
+      <tags />
+      <url>http://api.flickr.com/services/soap/</url>
+      <expectedResponseText>Invalid API</expectedResponseText>
+      <startDelay>0</startDelay>
+      <showPageInConsole>true</showPageInConsole>
+      <postData>&lt;s:Envelope
+    xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/1999/XMLSchema"
+&gt;
+    &lt;s:Body&gt;
+            &lt;x:FlickrRequest xmlns:x="urn:flickr"&gt;
+                    &lt;method&gt;flickr.test.echo&lt;/method&gt;
+                    &lt;name&gt;value&lt;/name&gt;
+            &lt;/x:FlickrRequest&gt;
+    &lt;/s:Body&gt;
+&lt;/s:Envelope&gt;</postData>
+    </tests2.HttpPostRequestTest>
+  </deployables>
+</udm.DeploymentPackage>

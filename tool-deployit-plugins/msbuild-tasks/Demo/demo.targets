@@ -1,0 +1,175 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Main">
+
+	<PropertyGroup>
+		<AssemblyPath>..\XebiaLabs.Deployit.MSbuildTasks\bin\Debug</AssemblyPath>
+	</PropertyGroup>
+	
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.CreatePackage" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.UploadPackage" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.GenerateDeploymentTask" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.TaskControler" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.WaitForTask" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+	<UsingTask TaskName="XebiaLabs.Deployit.MSbuildTasks.GenerateRollbackTask" AssemblyFile="$(AssemblyPath)\XebiaLabs.Deployit.MSbuildTasks.dll" />
+
+
+
+	<!-- Server configuration -->
+	<PropertyGroup>
+		<DeployitServerURL>http://localhost:4516</DeployitServerURL>
+		<DeployitServerUserName>admin</DeployitServerUserName>
+		<DeployitServerPassword>admin</DeployitServerPassword>
+	</PropertyGroup>
+
+	<!-- Package configuration -->
+	<PropertyGroup>
+		<ApplicationVersion>MAIN-1-20</ApplicationVersion>
+		<PackageDataPath>PackageData</PackageDataPath>
+		<ManifestPath>Manifest.MF</ManifestPath>
+		<OutputPath>Output</OutputPath>
+	</PropertyGroup>
+
+	<!-- Generated properties -->
+	<PropertyGroup>
+		<ApplicationName />
+		<PackageId />
+		<DeploymentTaskId />
+		<DeploymentTaskFinalState />
+	</PropertyGroup>
+	
+
+	<!-- Initialize the build output -->
+	
+
+
+	<Target Name="Main" DependsOnTargets="InitOutput">
+
+		<CallTarget Targets="PackageAndDeploy" />
+		<CallTarget Targets="FinalizeDeployment" Condition="'$(DeploymentTaskFinalState)' == 'EXECUTED'"   />
+		<CallTarget Targets="Rollback" Condition="'$(DeploymentTaskFinalState)' != 'EXECUTED'"  />
+	</Target>
+	
+	<Target Name="InitOutput">
+		<RemoveDir Directories="$(OutputPath)" />
+		<MakeDir Directories="$(OutputPath)" />
+	</Target>
+	
+	<!-- Main Target -->
+	<Target Name="PackageAndDeploy">
+
+		
+		<PropertyGroup>
+			<PackagePath>$(OutputPath)\Package.dar</PackagePath>
+		</PropertyGroup>
+		<CreatePackage 
+			ManifestPath="$(ManifestPath)" 
+			ApplicationVersion="$(ApplicationVersion)" 
+			PackageDataRootDirectory="$(PackageDataPath)" 
+			PackagePath="$(PackagePath)">
+			<Output TaskParameter="ApplicationName" PropertyName="ApplicationName" />
+		</CreatePackage>
+		<Message Text="ApplicationName: '$(ApplicationName)" />
+
+		<UploadPackage
+				DeployitURL="$(DeployitServerURL)"
+				UserName="$(DeployitServerUserName)"
+				Password="$(DeployitServerPassword)"
+				PackagePath="$(PackagePath)">
+			<Output TaskParameter="PackageId" PropertyName="PackageId" />
+		</UploadPackage>
+
+
+		<Message Text="PackageId = $(PackageId)" />
+
+		<GenerateDeploymentTask 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			EnvironmentName="SRVDEV" 
+			ApplicationName="$(ApplicationName)" 
+			VersionId="$(PackageId)">
+			<Output TaskParameter="TaskId" PropertyName="DeploymentTaskId" />
+		</GenerateDeploymentTask>
+
+		<Message Text="DeploimentTask Id = $(DeploymentTaskId)" />
+
+		<TaskControler 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(DeploymentTaskId)" 
+			Action="start"/>
+
+		<WaitForTask 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(DeploymentTaskId)">
+			<Output TaskParameter="FinalState" PropertyName="DeploymentTaskFinalState" />
+		</WaitForTask>
+
+		<Message Text="DeploymentTask final state = '$(DeploymentTaskFinalState)'" />
+
+
+
+
+	</Target>
+
+	<!-- Final step of the deployment: archive the deployment task -->
+	<Target Name="FinalizeDeployment">
+
+		<TaskControler 
+			Condition="'$(DeploymentTaskFinalStat)' == 'EXECUTED'" 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(DeploymentTaskId)" 
+			Action="Archive"/>
+		<Message Text="Deployment successfull :)" />
+	</Target>
+
+	<!-- Rollback target: create rollback task and run it-->
+	<Target Name="Rollback">
+		<PropertyGroup>
+			<RollbackTaskId />
+			<RollbackTaskFinalState />
+		</PropertyGroup>
+		<Message Text="Rollback :( '$(DeploymentTaskId)'" />
+
+		<GenerateRollbackTask
+			DeployitURL="$(DeployitServerURL)"
+			UserName="$(DeployitServerUserName)"
+			Password="$(DeployitServerPassword)"
+			DeploymentTaskId="$(DeploymentTaskId)"
+			>
+			<Output TaskParameter="RollbackTaskId" PropertyName="RollbackTaskId" />
+		</GenerateRollbackTask>
+
+		<Message Text="RollbackTask Id = '$(RollbackTaskId)'" />
+
+		<TaskControler 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(RollbackTaskId)" 
+			Action="start"/>
+
+		<WaitForTask 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(RollbackTaskId)">
+			<Output TaskParameter="FinalState" PropertyName="RollbackTaskFinalState" />
+		</WaitForTask>
+
+		<Message Text="RollbackTask final state = '$(RollbackTaskFinalState)'" />
+
+
+		<TaskControler 
+			Condition="'$(DeploymentTaskFinalStat)' == 'EXECUTED'" 
+			DeployitURL="$(DeployitServerURL)" 
+			UserName="$(DeployitServerUserName)" 
+			Password="$(DeployitServerPassword)" 
+			TaskId="$(RollbackTaskId)" 
+			Action="Archive"/>
+	</Target>
+</Project>

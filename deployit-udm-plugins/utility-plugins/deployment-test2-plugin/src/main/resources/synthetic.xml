@@ -3,22 +3,19 @@
            xmlns="http://www.xebialabs.com/deployit/synthetic"
            xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
 
-    <type type="tests2.TestRunner" extends="generic.Container" description="Machine from where release tests are to be performed">
+    <type-modification type="overthere.Host">
         <property name="wgetExecutable" hidden="true" default="wget" />
-    </type>
+    </type-modification>
 
-    <type type="tests2.ExecutedHttpRequestTest" extends="generic.ExecutedScript"
-            container-type="tests2.TestRunner" deployable-type="tests2.HttpRequestTest">
-        <generate-deployable type="tests2.HttpRequestTest" extends="generic.Resource" />
-        
+    <type type="tests2.ExecutedHttpRequestTest2" extends="generic.ExecutedScript"
+            container-type="overthere.Host" deployable-type="tests2.HttpRequestTest">
         <property name="url" description="The URL to test" />
         <property name="expectedResponseText" size="large" description="Text that is expected to be contained in the HTTP response body, if the response code is in the 200 range. A non-2xx response code will cause the test to fail irrespective of the response body" />
         <property name="ignoreCertificateWarnings" required="false" default="true" kind="boolean" description="If set, certificate warnings when making a connection will be ignored" />
         <property name="startDelay" kind="integer" default="5" description="Time in seconds to wait before starting the execution of step"/>
-        <property name="maxRetries" kind="integer" default="5" description="Number of times to attempt executing the step, in case it fails"/>
+        <property name="maxRetries" kind="integer" default="5" description="Number of times to attempt executing the step, incase it fails"/>
         <property name="retryWaitInterval" kind="integer" default="5" description="Time in seconds to wait before next retry"/>
         <property name="showPageInConsole" required="false" kind="boolean" default="false" description="Show the page retrieved from the url"/>
-        <property name="timeout" kind="integer" default="30" description="Timeout in seconds for a query on the specified url"/>
         <!-- admin properties -->
         <property name="classpathResources" kind="set_of_string" hidden="true" required="false" default="tests2/runtime/wget.exe" />
         <property name="createScript" hidden="true" default="tests2/execute-http-request" />
@@ -30,4 +27,68 @@
         <!-- DefaultOrders.POST_FLIGHT + 2-->
         <property name="noopOrder" kind="integer" hidden="true" default="102" />
     </type>
+
+    <!-- preserved for backwards compatibility - tests can run directly on hosts now -->
+    <type type="tests2.TestRunner" extends="generic.Container" description="Machine from where release tests are to be performed">
+        <property name="wgetExecutable" hidden="true" default="wget" />
+    </type>
+
+    <type type="tests2.ExecutedHttpRequestTest" extends="generic.ExecutedScript"
+            container-type="tests2.TestRunner" deployable-type="tests2.HttpRequestTest">
+        <generate-deployable type="tests2.HttpRequestTest" extends="generic.Resource" />
+        
+        <property name="url" description="The URL to test" />
+        <property name="expectedResponseText" size="medium" description="Text that is expected to be contained in the HTTP response body, if the response code is in the 200 range. A non-2xx response code will cause the test to fail irrespective of the response body" />
+
+        <property name="showPageInConsole" required="false" kind="boolean" default="false" category="Options" description="Show the page retrieved from the url"/>
+        <property name="ignoreCertificateWarnings" required="false" default="true" kind="boolean" category="Options" description="If set, certificate warnings when making a connection will be ignored" />
+        <property name="startDelay" kind="integer" default="2" category="Options" description="Time in seconds to wait before starting the execution of step"/>
+        <property name="maxRetries" kind="integer" default="5" category="Options" description="Number of times to attempt executing the step, in case it fails"/>
+        <property name="retryWaitInterval" kind="integer" default="5" category="Options" description="Time in seconds to wait before next retry"/>
+        <property name="timeout" kind="integer" default="30" category="Options" description="Timeout in seconds for a query on the specified url"/>
+        <!-- admin properties -->
+        <property name="classpathResources" kind="set_of_string" hidden="true" required="false" default="tests2/runtime/wget.exe" />
+        <property name="createScript" hidden="true" default="tests2/execute-http-request" />
+        <property name="createVerb" hidden="true" default="Run" />
+        <!-- DefaultOrders.POST_FLIGHT + 2-->
+        <property name="createOrder" kind="integer" hidden="true" default="102" />
+        <property name="noopScript" hidden="true" default="tests2/execute-http-request" />
+        <property name="noopVerb" hidden="true" default="Run" />
+        <!-- DefaultOrders.POST_FLIGHT + 2-->
+        <property name="noopOrder" kind="integer" hidden="true" default="102" />
+    </type>
+
+    <type type="tests2.ExecutedHttpPostRequestTest" deployable-type="tests2.HttpPostRequestTest" extends="tests2.ExecutedHttpRequestTest" >
+        <generate-deployable type="tests2.HttpPostRequestTest" extends="tests2.HttpRequestTest" />
+        <property name="postData" size="large" description="Use POST as the method for all HTTP requests and send the specified data in the request body." />
+        <property name="contentType" default="text/xml" description="Content mime type"/>
+        <property name="templateClasspathResources" kind="set_of_string" hidden="true" required="false" default="tests2/postdata.dat" />
+    </type>
+
+    <type type="tests2.ExecutedHttpPostFileRequestTest" extends="generic.ExecutedScriptWithDerivedArtifact"
+          container-type="tests2.TestRunner" deployable-type="tests2.HttpPostFileRequestTest">
+        <generate-deployable type="tests2.HttpPostFileRequestTest" extends="generic.File" />
+
+        <property name="url" description="The URL to test"/>
+        <property name="contentType" default="text/xml" description="Content Mime type of file"/>
+        <property name="expectedResponseText" size="medium" description="Text that is expected to be contained in the HTTP response body, if the response code is in the 200 range. A non-2xx response code will cause the test to fail irrespective of the response body" />
+
+        <property name="showPageInConsole" required="false" kind="boolean" default="false" category="Options" description="Show the page retrieved from the url"/>
+        <property name="ignoreCertificateWarnings" required="false" default="true" kind="boolean" category="Options" description="If set, certificate warnings when making a connection will be ignored" />
+        <property name="startDelay" kind="integer" default="2" category="Options" description="Time in seconds to wait before starting the execution of step"/>
+        <property name="maxRetries" kind="integer" default="5" category="Options" description="Number of times to attempt executing the step, in case it fails"/>
+        <property name="retryWaitInterval" kind="integer" default="5" category="Options" description="Time in seconds to wait before next retry"/>
+        <property name="timeout" kind="integer" default="30" category="Options" description="Timeout in seconds for a query on the specified url"/>
+        <!-- admin properties -->
+        <property name="classpathResources" kind="set_of_string" hidden="true" required="false" default="tests2/runtime/wget.exe" />
+        <property name="createScript" hidden="true" default="tests2/execute-http-request" />
+        <property name="createVerb" hidden="true" default="Run" />
+        <!-- DefaultOrders.POST_FLIGHT + 2-->
+        <property name="createOrder" kind="integer" hidden="true" default="102" />
+        <property name="noopScript" hidden="true" default="tests2/execute-http-request" />
+        <property name="noopVerb" hidden="true" default="Run" />
+        <!-- DefaultOrders.POST_FLIGHT + 2-->
+        <property name="noopOrder" kind="integer" hidden="true" default="102" />
+    </type>
+
 </synthetic>

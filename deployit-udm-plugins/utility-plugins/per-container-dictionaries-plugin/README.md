@@ -51,7 +51,7 @@ LOG_FILENAME: {{container_host_address}}.log
 
 2. Insert the placeholders in artifact files, e.g. configuration files.
 
-3. Define a dictionary for your environment, say ENV_DICT, that contains the key you just defined and the value '<per-container>'. Link this dictionary to your environment.
+3. Define a dictionary for your environment, say ENV_DICT, that contains the key you just defined and the value `<per-container>`. Link this dictionary to your environment.
 
 4. Define a dictionary for your container, say CONTAINER_DICT, that contains the key you just defined and the value you want it to be on that containers. Link this dictionary to your container.
 

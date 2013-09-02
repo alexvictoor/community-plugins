@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.xebialabs.deployit</groupId>
     <artifactId>udm-plugins</artifactId>
-    <version>3.8.0</version>
+    <version>3.9</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>utility-plugins</artifactId>
@@ -27,7 +27,9 @@
     <module>personal-credentials-plugin</module>
     <module>precheck-plugin</module>
     <module>release-auth-plugin</module>
+    <module>restrict-placeholders-to-dicts-plugin</module>
     <module>rpm-plugin</module>
     <module>scheduler-plugin</module>
+    <module>credential-on-host-plugin</module>
   </modules>
 </project>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<synthetic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.xebialabs.com/deployit/synthetic"
+           xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
+
+
+    <type type="sql.StoredProcedures" extends="generic.Folder" description="Folder containing SQL stored procedures scripts">
+        <property name="username" required="false" description="`The username to connect to the database"/>
+        <property name="password" required="false" password="true" description="The password to connect to the database"/>
+        <property name="folderSequence" required="false" kind="list_of_string"/>
+    </type>
+
+    <type type="sql.ExecutedStoredProcedures" extends="sql.ExecutedFolder"
+          deployable-type="sql.StoredProcedures" container-type="sql.SqlClient"
+          description="SQL stored procedure scripts executed on an SQL client">
+
+        <property name="createVerb" hidden="true" default="Run"/>
+        <property name="modifyVerb" hidden="true" default="Run"/>
+        <property name="executorScript" hidden="true" default="${deployed.container.clientWrapperScript}"/>
+        <property name="scriptRecognitionRegex" hidden="true" default="([0-9]*-.*)\.sql"/>
+
+        <property name="username" required="false"
+                  description="If set, the user name to use. Falls back to the optional default user name set on the sql.SqlClient container"/>
+        <property name="password" required="false" password="true"
+                  description="If set, the password to use. Falls back to the optional default password set on the sql.SqlClient container"/>
+
+        <property name="folderSequence" required="false" kind="list_of_string"/>
+    </type>
+
+
+    <type type="sql.OracleStoredProcedures" extends="sql.StoredProcedures" description="Folder containing SQL stored procedures scripts">
+        <property name="folderSequence" required="false" kind="list_of_string" default="views,types,packages,procedures,functions" category="Oracle"/>
+    </type>
+
+    <type type="sql.MySqlStoredProcedures" extends="sql.StoredProcedures" description="Folder containing SQL stored procedures scripts">
+        <property name="folderSequence" required="false" kind="list_of_string" default="triggers,procedures,functions" category="Oracle"/>
+    </type>
+
+
+</synthetic>

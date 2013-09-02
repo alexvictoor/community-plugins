@@ -1,0 +1,9 @@
+<synthetic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.xebialabs.com/deployit/synthetic"
+           xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
+
+    <type-modification type="udm.Version">
+        <property name="applicationDependencies" kind="map_string_string" required="false" category="Dependencies" />
+    </type-modification>
+
+</synthetic>

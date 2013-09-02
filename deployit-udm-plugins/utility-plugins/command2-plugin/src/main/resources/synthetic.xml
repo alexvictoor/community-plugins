@@ -7,10 +7,10 @@
       <generate-deployable type="cmd2.CommandFolder" extends="generic.Folder" />
 
       <!-- allow multi-line commands -->
-      <property name="command" size="large" description="The command(s) to run. Need to be correctly formatted and escaped for the target platform" />
+      <property name="command" size="large" description="The command(s) to run. Need to be correctly formatted and escaped for the target platform. On Windows, the commands entered will be executed within a batch file. Use 'call' to invoke other batch files" />
       <!-- DefaultOrders.CREATE_RESOURCES -->
       <property name="createOrder" kind="integer" hidden="false" default="60" label="Run Order" category="Deployment" />
-      <property name="undoCommand" required="false" size="large" description="If set, the command(s) to run to undo the execution of the command. May reference the same files as 'command'" />
+      <property name="undoCommand" required="false" size="large" description="If set, the command(s) to run to undo the execution of the command. May reference the same files as 'command'. On Windows, the commands entered will be executed within a batch file. Use 'call' to invoke other batch files" />
       <!-- DefaultOrders.DESTROY_RESOURCES -->
       <property name="destroyOrder" kind="integer" hidden="false" default="40" label="Undo Order" category="Deployment" />
       <property name="envVars" kind="map_string_string" required="false" />
@@ -31,10 +31,10 @@
       <generate-deployable type="cmd2.Command" extends="generic.Resource" />
 
       <!-- allow multi-line commands -->
-      <property name="command" size="large" description="The command(s) to run. Needs to be correctly formatted and escaped for the target platform" />
+      <property name="command" size="large" description="The command(s) to run. Needs to be correctly formatted and escaped for the target platform. On Windows, the commands entered will be executed within a batch file. Use 'call' to invoke other batch files" />
       <!-- DefaultOrders.CREATE_RESOURCES -->
       <property name="createOrder" kind="integer" hidden="false" default="60" label="Run Order" category="Deployment" />
-      <property name="undoCommand" required="false" size="large" description="If set, the command(s) to run to undo the execution of the command. May reference the same files as 'command'" />
+      <property name="undoCommand" required="false" size="large" description="If set, the command(s) to run to undo the execution of the command. May reference the same files as 'command'. On Windows, the commands entered will be executed within a batch file. Use 'call' to invoke other batch files" />
       <!-- DefaultOrders.DESTROY_RESOURCES -->
       <property name="destroyOrder" kind="integer" hidden="false" default="40" label="Undo Order" category="Deployment" />
       <property name="envVars" kind="map_string_string" required="false" />

@@ -1,10 +1,12 @@
 package ext.deployit.community.importer.composite;
 
+import com.xebialabs.deployit.booter.local.LocalBooter;
 import com.xebialabs.deployit.plugin.api.udm.Version;
 
 import ext.deployit.community.importer.composite.CompositeApplicationDescriptor;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -17,8 +19,10 @@ public class CompositeApplicationDescriptorTest {
 
 	private CompositeApplicationDescriptor descriptor;
 
+
 	@Before
 	public void setUp() throws Exception {
+        LocalBooter.bootWithoutGlobalContext();
 		descriptor = new CompositeApplicationDescriptor(new File(getResource("composite-application-1.cad").toURI()));
 	}
 

@@ -1,10 +1,12 @@
 @echo off
 setlocal
 
+<#if deployed.container.envVars??>
 <#assign envVars=deployed.container.envVars />
 <#list envVars?keys as envVar>
 set ${envVar}=${envVars[envVar]}
 </#list>
+</#if>
 
 set START_DELAY_SECS=${deployed.startDelay}
 
@@ -27,12 +29,25 @@ if not ERRORLEVEL 1 (
   )
   cd DEPLOYITPB-2907-workaround
 )
+
+<#assign wgetCmdLine = ["${deployed.container.wgetExecutable}", "--timeout=${deployed.timeout}"] />
+<#if (deployed.ignoreCertificateWarnings?? && deployed.ignoreCertificateWarnings)>
+    <#assign wgetCmdLine = wgetCmdLine + ["--no-check-certificate"]/>
+</#if>
+<#if (deployed.postData??)>
+    <#assign wgetCmdLine = wgetCmdLine + ["--post-file=${step.remoteWorkingDirectory.path}/postdata.dat", "--header=\"Content-Type: ${deployed.contentType}\""]/>
+<#elseif (deployed.file??)>
+    <#assign wgetCmdLine = wgetCmdLine + ["--post-file=${deployed.file}", "--header=\"Content-Type: ${deployed.contentType}\""]/>
+</#if>
+
+<#assign wgetCmdLine = wgetCmdLine + ["-O"]/>
+
  
 for /L %%i in (1,1,%MAX_RETRIES%) do (
   del /Q %RESPONSE_FILE_PREFIX%.%%i 2> nul
 
-  echo Executing "${deployed.container.wgetExecutable} --timeout=${deployed.timeout} <#if (deployed.ignoreCertificateWarnings?? && deployed.ignoreCertificateWarnings)>--no-check-certificate</#if> -O %RESPONSE_FILE_PREFIX%.%%i ${deployed.url}"
-  ${deployed.container.wgetExecutable} --timeout=${deployed.timeout} <#if (deployed.ignoreCertificateWarnings?? && deployed.ignoreCertificateWarnings)>--no-check-certificate</#if> -O %RESPONSE_FILE_PREFIX%.%%i "${deployed.url}"
+  echo Executing <#list wgetCmdLine as item>${item} </#list>%RESPONSE_FILE_PREFIX%.%%i ${deployed.url}"
+  <#list wgetCmdLine as item>${item} </#list>%RESPONSE_FILE_PREFIX%.%%i ${deployed.url}"
 
   if ERRORLEVEL 1 (
     set WGET_EXIT_CODE=1
